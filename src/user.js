@@ -5,12 +5,16 @@ const User = ({ id, onClick }) => {
     <div
       style={{
         color: 'blue',
-        width: '200px',
-        height: '50px',
+        width: '150px',
+        height: '70px',
         border: '2px solid black',
+        borderRadius: '50%',
         marginBottom: '5px',
+        display: 'flex',
+        justifyContent: 'center',
+        flexDirection: 'column',
       }}
-      onClick={ () => onClick(id)}
+      onClick={() => onClick(id)}
     >
       {id}
     </div>
