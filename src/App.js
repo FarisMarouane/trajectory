@@ -7,8 +7,9 @@ import Graph from './graph';
 import PositionInfo from './positionInfo';
 import User from './user';
 import { fromIndexToUserId } from './helpers';
+import UserDetail from './userDetail';
 
-class App extends React.Component {
+class App extends React.PureComponent {
   state = {
     rawData: [],
     dataToDisplay: {},
@@ -17,6 +18,8 @@ class App extends React.Component {
     userPosition: { x: undefined, y: undefined },
     showAll: false,
     hoveredOverUserId: undefined,
+    displayDefaultTitle: true,
+    showUserStats: false,
   };
 
   async componentDidMount() {
@@ -30,10 +33,9 @@ class App extends React.Component {
       };
       return [...acc, client];
     }, []);
-
     const usefullData = sortedByTimeData.reduce((acc, curr) => {
       const sanitizedPoints = curr.points.reduce((acc, curr) => {
-        return [...acc, { x: curr.x, y: curr.y }];
+        return [...acc, { x: curr.x, y: curr.y, time: curr.time }];
       }, []);
       return [...acc, sanitizedPoints];
     }, []);
@@ -47,38 +49,53 @@ class App extends React.Component {
 
   onHoverOverUser = (userPosition = {}, index) => {
     const hoveredOverUserData = fromIndexToUserId(index, this.state.rawData);
-    this.setState({ userPosition, userId: hoveredOverUserData });
+    this.setState({
+      userPosition,
+      userId: hoveredOverUserData,
+      displayDefaultTitle: false,
+    });
   };
 
-  onClick = (id = 0) => {
+  onUserClick = (id = 0) => {
     const { rawData = [] } = this.state;
     const index = rawData.findIndex(u => u.id === id);
     this.setState({
       index,
       userId: id,
+      displayDefaultTitle: true,
+      showUserStats: true,
     });
   };
 
   onButtonClick = () => {
     this.setState(prevState => ({
       showAll: !prevState.showAll,
+      displayDefaultTitle: !prevState.displayDefaultTitle,
+      showUserStats: !prevState.showUserStats,
     }));
   };
 
   render() {
     const {
-      dataToDisplay = {},
+      dataToDisplay = [],
       rawData = [],
       index,
       userId,
-      userPosition: { x, y } = {},
+      userPosition: { x, y, time } = {},
       showAll,
+      displayDefaultTitle,
+      showUserStats,
     } = this.state;
-
     return (
       <div className="App">
         <header className="App-header">
-          <PositionInfo userId={userId} x={x} y={y} />
+          <PositionInfo
+            displayDefaultTitle={displayDefaultTitle}
+            userId={userId}
+            time={time}
+            x={x}
+            y={y}
+          />
           <div
             style={{
               display: 'flex',
@@ -89,22 +106,43 @@ class App extends React.Component {
               style={{
                 display: 'flex',
                 flexDirection: 'column',
+                justifyContent: 'start',
+              }}
+            >
+              <button
+                style={{ marginBottom: '30px' }}
+                onClick={this.onButtonClick}
+              >
+                Show All Customers
+              </button>
+              {rawData.map((user, i) => {
+                return (
+                  <User onUserClick={this.onUserClick} key={i} id={user.id} />
+                );
+              })}
+            </div>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
                 justifyContent: 'space-around',
               }}
             >
-              <button onClick={this.onButtonClick}>Show All Clients</button>
-              {rawData.map((user, i) => {
-                return <User onClick={this.onClick} key={i} id={user.id} />;
-              })}
+              <Graph
+                onHoverOverUser={this.onHoverOverUser}
+                dataToDisplay={dataToDisplay}
+                rawData={rawData}
+                index={index}
+                userId={userId}
+                showAll={showAll}
+              />
+              <UserDetail
+                userId={userId}
+                index={index}
+                data={dataToDisplay}
+                showUserStats={showUserStats}
+              />
             </div>
-            <Graph
-              onHoverOverUser={this.onHoverOverUser}
-              dataToDisplay={dataToDisplay}
-              rawData={rawData}
-              index={index}
-              userId={userId}
-              showAll={showAll}
-            />
           </div>
         </header>
       </div>

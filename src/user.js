@@ -1,6 +1,6 @@
 import React from 'react';
 
-const User = ({ id, onClick }) => {
+const User = ({ id, onUserClick }) => {
   return (
     <div
       style={{
@@ -14,7 +14,7 @@ const User = ({ id, onClick }) => {
         justifyContent: 'center',
         flexDirection: 'column',
       }}
-      onClick={() => onClick(id)}
+      onClick={() => onUserClick(id)}
     >
       {id}
     </div>
