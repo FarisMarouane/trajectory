@@ -96,21 +96,10 @@ class App extends React.PureComponent {
             x={x}
             y={y}
           />
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-around',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'start',
-              }}
-            >
+          <div className="container">
+            <div className="customers">
               <button
-                style={{ marginBottom: '30px' }}
+                id="button"
                 onClick={this.onButtonClick}
               >
                 Show All Customers
@@ -121,13 +110,7 @@ class App extends React.PureComponent {
                 );
               })}
             </div>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-around',
-              }}
-            >
+            <div className="graph">
               <Graph
                 onHoverOverUser={this.onHoverOverUser}
                 dataToDisplay={dataToDisplay}
