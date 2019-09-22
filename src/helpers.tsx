@@ -1,4 +1,10 @@
-export const usersColors = {
+import { userData, positionInTime } from './App'
+
+interface colors {
+  [id: string]: string,
+}
+
+export const usersColors: colors = {
   '4421': 'red',
   '3244': 'blue',
   '7255': 'pink',
@@ -6,11 +12,11 @@ export const usersColors = {
   '2332': 'yellow',
 };
 
-export function fromIndexToUserId(index, data) {
+export function fromIndexToUserId(index: number, data: Array<userData>) {
   return data[index].id;
 }
 
-export function calculateTotalTime(data, index) {
+export function calculateTotalTime(data: Array<Array<positionInTime>>, index: number) {
   return data[index][data[index].length - 1].time - data[index][0].time;
 }
 
@@ -21,7 +27,7 @@ function calculateDistanceBetweenTwoPoints(
   return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
 }
 
-export function calculateAverageSpeed(data, index) {
+export function calculateAverageSpeed(data: Array<Array<positionInTime>>, index: number) {
   const userData = data[index];
   const totalTime = calculateTotalTime(data, index);
   const totalDistance = userData.reduce((acc, curr, i, array) => {
