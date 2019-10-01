@@ -9,16 +9,27 @@ import User from './user';
 import { fromIndexToUserId } from './helpers';
 import UserDetail from './userDetail';
 
+export interface positionInTime {
+  time: number,
+  x: number,
+  y: number,
+}
+
+export interface userData {
+  id: string,
+  points: Array<positionInTime>,
+}
+
 function App() {
   const [index, setIndex] = useState(0);
-  const [userId, setUserId] = useState(undefined);
+  const [userId, setUserId] = useState('');
   const [showAll, setShowAll] = useState(false);
   const [displayDefaultTitle, setDefaultTitleDisplay] = useState(true);
   const [showUserStats, setShowUserStats] = useState(false);
   const [userPosition, setUserPosition] = useState({
-    x: undefined,
-    y: undefined,
-    time: undefined,
+    x: 0,
+    y: 0,
+    time: 0,
   });
   const [dataToDisplay, setDataToDisplay] = useState({});
   const [rawData, setRawData] = useState([]);
@@ -39,7 +50,8 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const sortedByTimeData = rawData.reduce((acc, curr) => {
+    const sortedByTimeData = rawData.reduce((acc: Array<userData>, curr: userData): Array<userData> =>
+     {
       let client = {
         id: curr.id,
         points: curr.points.sort((a, b) => a.time - b.time),
@@ -47,8 +59,8 @@ function App() {
       return [...acc, client];
     }, []);
 
-    const usefullData = sortedByTimeData.reduce((acc, curr) => {
-      const sanitizedPoints = curr.points.reduce((acc, curr) => {
+    const usefullData = sortedByTimeData.reduce((acc: Array<Array<positionInTime>>, curr: userData) => {
+      const sanitizedPoints = curr.points.reduce((acc: Array<positionInTime>, curr: positionInTime) => {
         return [...acc, { x: curr.x, y: curr.y, time: curr.time }];
       }, []);
       return [...acc, sanitizedPoints];
@@ -63,15 +75,15 @@ function App() {
     }
   }, [rawData, userId]);
 
-  const onHoverOverUser = (userPosition = {}, index) => {
+  const onHoverOverUser = (userPosition: positionInTime, index: number): void => {
     const hoveredOverUserData = fromIndexToUserId(index, rawData);
     setUserPosition(userPosition);
     setUserId(hoveredOverUserData);
     setDefaultTitleDisplay(false);
   };
 
-  const onUserClick = (id = 0) => {
-    const index = rawData.findIndex(u => u.id === id);
+  const onUserClick = (id: string = '0') => {
+    const index = rawData.findIndex((u: userData) => u.id === id);
     setIndex(index);
     setUserId(id);
     setDefaultTitleDisplay(true);
@@ -99,8 +111,8 @@ function App() {
             <button id="button" onClick={onButtonClick}>
               Show All Customers
             </button>
-            {rawData.map((user, i) => {
-              return <User onUserClick={onUserClick} key={i} id={user.id} />;
+            {rawData.map((user: userData) => {
+              return <User onUserClick={onUserClick} key={user.id} id={user.id} />;
             })}
           </div>
           <div className="graph">
