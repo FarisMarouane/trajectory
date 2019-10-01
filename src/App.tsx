@@ -10,14 +10,14 @@ import { fromIndexToUserId } from './helpers';
 import UserDetail from './userDetail';
 
 export interface positionInTime {
-  time: number,
-  x: number,
-  y: number,
+  time: number;
+  x: number;
+  y: number;
 }
 
 export interface userData {
-  id: string,
-  points: Array<positionInTime>,
+  id: string;
+  points: Array<positionInTime>;
 }
 
 function App() {
@@ -32,7 +32,7 @@ function App() {
     time: 0,
   });
   const [dataToDisplay, setDataToDisplay] = useState({});
-  const [rawData, setRawData] = useState([]);
+  const [rawData, setRawData]: [Array<userData>, Function] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -50,21 +50,29 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const sortedByTimeData = rawData.reduce((acc: Array<userData>, curr: userData): Array<userData> =>
-     {
-      let client = {
-        id: curr.id,
-        points: curr.points.sort((a, b) => a.time - b.time),
-      };
-      return [...acc, client];
-    }, []);
+    const sortedByTimeData = rawData.reduce(
+      (acc: Array<userData>, curr: userData): Array<userData> => {
+        let client = {
+          id: curr.id,
+          points: curr.points.sort((a, b) => a.time - b.time),
+        };
+        return [...acc, client];
+      },
+      [],
+    );
 
-    const usefullData = sortedByTimeData.reduce((acc: Array<Array<positionInTime>>, curr: userData) => {
-      const sanitizedPoints = curr.points.reduce((acc: Array<positionInTime>, curr: positionInTime) => {
-        return [...acc, { x: curr.x, y: curr.y, time: curr.time }];
-      }, []);
-      return [...acc, sanitizedPoints];
-    }, []);
+    const usefullData = sortedByTimeData.reduce(
+      (acc: Array<Array<positionInTime>>, curr: userData) => {
+        const sanitizedPoints = curr.points.reduce(
+          (acc: Array<positionInTime>, curr: positionInTime) => {
+            return [...acc, { x: curr.x, y: curr.y, time: curr.time }];
+          },
+          [],
+        );
+        return [...acc, sanitizedPoints];
+      },
+      [],
+    );
 
     if (!userId && rawData.length !== 0) {
       setUserId(rawData[0].id);
@@ -75,7 +83,10 @@ function App() {
     }
   }, [rawData, userId]);
 
-  const onHoverOverUser = (userPosition: positionInTime, index: number): void => {
+  const onHoverOverUser = (
+    userPosition: positionInTime,
+    index: number,
+  ): void => {
     const hoveredOverUserData = fromIndexToUserId(index, rawData);
     setUserPosition(userPosition);
     setUserId(hoveredOverUserData);
@@ -112,7 +123,9 @@ function App() {
               Show All Customers
             </button>
             {rawData.map((user: userData) => {
-              return <User onUserClick={onUserClick} key={user.id} id={user.id} />;
+              return (
+                <User onUserClick={onUserClick} key={user.id} id={user.id} />
+              );
             })}
           </div>
           <div className="graph">
