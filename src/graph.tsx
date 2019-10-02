@@ -9,8 +9,18 @@ import {
 } from 'react-vis';
 
 import { usersColors, fromIndexToUserId } from './helpers';
+import { userData, positionInTime } from './App';
 
-class Graph extends React.Component {
+type graphProps = {
+  dataToDisplay: Array<Array<positionInTime>>;
+  userId: string;
+  index: number;
+  onHoverOverUser: Function;
+  showAll: boolean;
+  rawData: Array<userData>;
+};
+
+class Graph extends React.Component<graphProps> {
   render() {
     const {
       dataToDisplay,
@@ -35,7 +45,7 @@ class Graph extends React.Component {
             lineStyle={{ stroke: usersColors[userId] }}
             markStyle={{ stroke: 'blue' }}
             size="9"
-            onValueMouseOver={datapoint => {
+            onValueMouseOver={(datapoint: positionInTime) => {
               onHoverOverUser(datapoint, index);
             }}
             data={dataToDisplay[index]}
@@ -52,7 +62,7 @@ class Graph extends React.Component {
                 lineStyle={{ stroke: usersColors[_userId] }}
                 markStyle={{ stroke: 'blue' }}
                 size="9"
-                onValueMouseOver={datapoint => {
+                onValueMouseOver={(datapoint: positionInTime) => {
                   onHoverOverUser(datapoint, index);
                 }}
                 key={index}

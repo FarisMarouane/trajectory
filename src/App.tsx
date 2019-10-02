@@ -31,7 +31,10 @@ function App() {
     y: 0,
     time: 0,
   });
-  const [dataToDisplay, setDataToDisplay] = useState({});
+  const [dataToDisplay, setDataToDisplay]: [
+    Array<Array<positionInTime>>,
+    Function,
+  ] = useState([]);
   const [rawData, setRawData]: [Array<userData>, Function] = useState([]);
 
   useEffect(() => {

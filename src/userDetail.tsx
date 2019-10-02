@@ -3,17 +3,12 @@ import { positionInTime } from './App';
 
 import { calculateTotalTime, calculateAverageSpeed } from './helpers';
 
-const UserDetail = ({
-  showUserStats,
-  userId,
-  index,
-  data,
-}: {
+const UserDetail: React.FunctionComponent<{
   showUserStats: boolean;
   userId: string;
   index: number;
   data: Array<Array<positionInTime>>;
-}) => {
+}> = ({ showUserStats, userId, index, data }) => {
   if (!showUserStats) return null;
   return (
     <table id="table">
